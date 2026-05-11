@@ -8,7 +8,7 @@ class FirestoreService {
 
   String? get _userId => _auth.currentUser?.uid;
 
-  // MAIN LIST
+  // Stream of tasks
   Stream<List<Task>> getTasks() {
     final uid = _userId;
 
@@ -36,13 +36,13 @@ class FirestoreService {
         );
   }
 
+  // Helper for write operations
   DocumentReference _userDoc() {
     final uid = _userId;
     if (uid == null) throw Exception("User not authenticated");
     return _db.collection('users').doc(uid);
   }
 
-  // NEW TASK
   Future<void> addTask(Task task) async {
     await _userDoc().collection('tasks').add({
       'title': task.title,
@@ -52,7 +52,6 @@ class FirestoreService {
     });
   }
 
-  // UPDATE TASK (Added from previous step)
   Future<void> updateTask(
     String taskId,
     String title,
@@ -66,14 +65,12 @@ class FirestoreService {
     });
   }
 
-  // TOGGLE STATUS
   Future<void> toggleTask(String taskId, bool currentStatus) async {
     await _userDoc().collection('tasks').doc(taskId).update({
       'isCompleted': !currentStatus,
     });
   }
 
-  // DELETE TASK
   Future<void> deleteTask(String taskId) async {
     await _userDoc().collection('tasks').doc(taskId).delete();
   }

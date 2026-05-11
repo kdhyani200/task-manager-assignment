@@ -38,26 +38,19 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         _isAuthenticating = true;
       });
 
-      UserCredential userCredential;
-
       if (_isLogin) {
-        userCredential = await _firebase.signInWithEmailAndPassword(
+        await _firebase.signInWithEmailAndPassword(
           email: enteredEmail.trim(),
           password: enteredPassword.trim(),
         );
       } else {
-        userCredential = await _firebase.createUserWithEmailAndPassword(
+        await _firebase.createUserWithEmailAndPassword(
           email: enteredEmail.trim(),
           password: enteredPassword.trim(),
         );
       }
 
-      if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
-          (route) => false,
-        );
-      }
+      // AuthGate automatically navigates
     } on FirebaseAuthException catch (e) {
       final message = _getAuthErrorMessage(e);
       SnackBarUtils.showSnackBar(context, message);

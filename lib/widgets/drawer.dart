@@ -64,9 +64,9 @@ class MainDrawer extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
-            onTap: () {
+            onTap: () async {
               Navigator.of(context).pop();
-              FirebaseAuth.instance.signOut();
+              await FirebaseAuth.instance.signOut();
             },
           ),
           const SizedBox(height: 20),

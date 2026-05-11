@@ -16,15 +16,11 @@ class AuthGate extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
 
     return authState.when(
-      data: (user) {
-        if (user != null) {
-          return const HomeScreen();
-        }
-        return const AuthenticationScreen();
-      },
+      data: (user) =>
+          user != null ? const HomeScreen() : const AuthenticationScreen(),
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, s) => Scaffold(body: Center(child: Text('Error: $e'))),
+      error: (e, s) => Scaffold(body: Center(child: Text('Auth Error: $e'))),
     );
   }
 }

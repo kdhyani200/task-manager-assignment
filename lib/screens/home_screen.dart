@@ -1,20 +1,34 @@
+import 'package:assign_task_manager/models/quote.dart';
+import 'package:assign_task_manager/services/quote_service.dart';
 import 'package:assign_task_manager/widgets/drawer.dart';
 import 'package:assign_task_manager/widgets/filter_item.dart';
 import 'package:assign_task_manager/widgets/quote_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
+
 import '../providers/filter_provider.dart';
-import '../providers/quote_provider.dart';
 import '../widgets/task_card.dart';
 import 'add_task_screen.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final quoteAsync = ref.watch(quoteProvider);
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  late Future<Quote> _quoteFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _quoteFuture = QuoteService().fetchRandomQuote();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final tasksAsync = ref.watch(filteredTasksProvider);
 
     return Scaffold(
@@ -39,18 +53,30 @@ class HomeScreen extends ConsumerWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              //QUOTE CARD
-              quoteAsync.when(
-                data: (q) =>
-                    QuoteCard(author: q.author, quoteText: q.quoteText),
-                loading: () => const QuotePlaceholder(),
-                error: (e, s) => const QuoteCard(
-                  author: "Steve Jobs",
-                  quoteText: "Keep Moving.",
-                ),
+              // QUOTE CARD
+              FutureBuilder<Quote>(
+                future: _quoteFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const QuotePlaceholder();
+                  }
+
+                  if (snapshot.hasError || !snapshot.hasData) {
+                    return const QuoteCard(
+                      author: "Steve Jobs",
+                      quoteText: "Keep Moving.",
+                    );
+                  }
+
+                  final q = snapshot.data!;
+
+                  return QuoteCard(author: q.author, quoteText: q.quoteText);
+                },
               ),
+
               const SizedBox(height: 20),
-              //FILTER ROW
+
+              // FILTER ROW
               Row(
                 children: const [
                   FilterItem(itemName: 'All', filter: TaskFilter.all),
@@ -60,8 +86,10 @@ class HomeScreen extends ConsumerWidget {
                   FilterItem(itemName: 'To-do', filter: TaskFilter.pending),
                 ],
               ),
+
               const SizedBox(height: 20),
-              //TASK LIST
+
+              // TASK LIST
               tasksAsync.when(
                 data: (tasks) => tasks.isEmpty
                     ? const EmptyTaskPlaceholder()
@@ -84,7 +112,7 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-//LOADING QUOTE CARD
+// LOADING QUOTE CARD
 class QuotePlaceholder extends StatelessWidget {
   const QuotePlaceholder({super.key});
 
@@ -150,7 +178,7 @@ class QuotePlaceholder extends StatelessWidget {
   }
 }
 
-//MAIN DRAWER
+// EMPTY TASK PLACEHOLDER
 class EmptyTaskPlaceholder extends StatelessWidget {
   const EmptyTaskPlaceholder({super.key});
 
