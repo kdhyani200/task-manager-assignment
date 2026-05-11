@@ -1,6 +1,4 @@
-import 'package:assign_task_manager/screens/authentication_screen.dart';
-import 'package:assign_task_manager/screens/home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:assign_task_manager/providers/auth_gate.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,22 +42,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.system,
-      home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (ctx, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
-
-          if (snapshot.hasData) {
-            return const HomeScreen();
-          } else {
-            return const AuthenticationScreen();
-          }
-        },
-      ),
+      home: AuthGate(),
     );
   }
 }
