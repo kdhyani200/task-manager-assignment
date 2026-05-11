@@ -110,7 +110,6 @@ lib/
 │   └── task.dart
 ├── providers/
 │   ├── filter_provider.dart
-│   ├── quote_provider.dart
 │   └── task_provider.dart
 ├── screens/
 │   ├── add_task_screen.dart
