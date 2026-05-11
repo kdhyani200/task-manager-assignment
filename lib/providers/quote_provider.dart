@@ -7,7 +7,7 @@ final quoteProvider = FutureProvider.autoDispose<Quote>((ref) async {
   final url = Uri.parse('https://zenquotes.io/api/random');
 
   try {
-    final response = await http.get(url).timeout(const Duration(seconds: 3));
+    final response = await http.get(url).timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
