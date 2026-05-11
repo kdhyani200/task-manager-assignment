@@ -6,14 +6,12 @@ class FirestoreService {
   final _db = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  // 1. Helper to get the UID safely
   String? get _userId => _auth.currentUser?.uid;
 
-  // 2. Updated getTasks to handle the null user case
+  // MAIN LIST
   Stream<List<Task>> getTasks() {
     final uid = _userId;
 
-    // If no user is logged in, return an empty list stream instead of crashing
     if (uid == null) {
       return Stream.value([]);
     }
@@ -28,7 +26,7 @@ class FirestoreService {
           (snapshot) => snapshot.docs.map((doc) {
             final data = doc.data();
             return Task(
-              id: doc.id, // Ensure your Task model has an 'id' field!
+              id: doc.id,
               title: data['title'] ?? '',
               description: data['description'] ?? '',
               dateTime: (data['dateTime'] as Timestamp).toDate(),
@@ -38,7 +36,6 @@ class FirestoreService {
         );
   }
 
-  // 3. Helper for write operations to avoid code repetition
   DocumentReference _userDoc() {
     final uid = _userId;
     if (uid == null) throw Exception("User not authenticated");
