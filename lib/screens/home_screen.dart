@@ -31,6 +31,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final tasksAsync = ref.watch(filteredTasksProvider);
 
+    void _refreshQuote() {
+      setState(() {
+        _quoteFuture = QuoteService().fetchRandomQuote();
+      });
+    }
+
     return Scaffold(
       drawer: const MainDrawer(),
       appBar: AppBar(
@@ -39,6 +45,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(onPressed: _refreshQuote, icon: const Icon(Icons.refresh)),
           IconButton(
             onPressed: () => Navigator.push(
               context,
