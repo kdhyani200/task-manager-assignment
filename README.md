@@ -37,6 +37,19 @@ A modern, real-time Task Management application built with **Flutter**, **Riverp
 
 ---
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="screenshots/photo-collage1.png" width="400"/>
+  <img src="screenshots/photo-collage2.png" width="400"/>
+  <img src="screenshots/photo-collage3.png" width="400"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/photo-collage4.png" width="400"/>
+  <img src="screenshots/photo-collage5.png" width="400"/>
+</p>
+
 ## 🚀 Getting Started
 
 ### 1️⃣ Prerequisites
